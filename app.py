@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 from data import get_location_data
 
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "<p>INF252 Project</p>"
+    return render_template("index.html")
 
 
 @app.route("/api/map")
