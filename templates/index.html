@@ -8,11 +8,15 @@
     <title>INF252-Project</title>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
 
 
   </head>
   <body>
-    <div id="wrapper"></div>
+    <div id="mapcontainer">
+      <h2>Measurement Locations</h2>
+      <div id="map"></div>
+    </div>
   </body>
 
   <script src={{ url_for('static', filename='./js/geomap.js') }}></script>
