@@ -73,8 +73,18 @@ async function updatePoints() {
   const svg = d3.select("#map svg")
   const path = d3.geoPath().projection(d3.geoEqualEarth())
 
-  const xAccessor = d => path.projection()([d.Longitude, d.Latitude])[0]
-  const yAccessor = d => path.projection()([d.Longitude, d.Latitude])[1]
+  const xAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
+  const yAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
+
+  const radiusAccessor = function(d) {
+    const earthRadiusKm = 6371;
+    const radiusKm = Math.sqrt(d.RangeSize / Math.PI);
+
+    // Get the scale factor for the given latitude
+    const scaleFactor = path.projection().scale() * getScaleFactorForLatitude(d.CentroidLatitude);
+
+    return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
+  }
 
   svg.selectAll("circle").remove();
 
@@ -86,7 +96,16 @@ async function updatePoints() {
     .join("circle")
     .attr("cx", d => xAccessor(d))
     .attr("cy", d => yAccessor(d))
-    .attr("r", 2)
+    .attr("r", d => radiusAccessor(d))
+}
+
+
+// Function to calculate the scale factor for a given latitude
+// in the Equal Earth projection
+function getScaleFactorForLatitude(latitude) {
+  const phi = latitude * Math.PI / 180; // Convert latitude to radians
+  const scaleFactor = Math.cos(phi / (2 * Math.sqrt(2))) / Math.sqrt(2);
+  return scaleFactor;
 }
 
 initMap();

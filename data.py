@@ -9,8 +9,11 @@ def get_location_data(wing_length, kipps_distance):
 
     mask = winglength_mask & kipps_mask
 
-    filtered = df.loc[mask, ['Centroid.Longitude', 'Centroid.Latitude']]
+    filtered = df.loc[mask]
+    filtered = filtered.rename(columns={
+        "Centroid.Longitude": "CentroidLongitude",
+        "Centroid.Latitude": "CentroidLatitude",
+        "Range.Size": "RangeSize",
+    })
 
-    filtered = filtered.rename(columns={"Centroid.Longitude": "Longitude", "Centroid.Latitude": "Latitude"})
-
-    return filtered
+    return filtered[["CentroidLongitude", "CentroidLatitude", "RangeSize"]]
