@@ -15,6 +15,13 @@
   <body>
     <div id="mapcontainer">
       <h2>Measurement Locations</h2>
+
+      <label style="min-width: 150px; display: inline-block" for="winglength-slider" id="winglength-label">Wing Length: </label>
+      <input type="range" min="20" max="800" value="390" id="winglength-slider" name="winglength-slider">
+      <br> 
+      <label style="min-width: 150px; display: inline-block" for="kipps-slider" id="kipps-label">Kipps Distance: </label>
+      <input type="range" min="0" max="420" value="210" id="kipps-slider" name="kipps-slider">
+
       <div id="map" style="width: 1920px; height: 1080px;"></div>
     </div>
   </body>

@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, send_file
+from flask import Flask, Response, render_template, send_file, request
 from data import get_location_data
 
 
@@ -12,7 +12,9 @@ def index():
 
 @app.route("/api/locations")
 def locations():
-    map_data = get_location_data()
+    wing_length = int(request.args.get("wing-length"))
+    kipps_distance = int(request.args.get("kipps-distance"))
+    map_data = get_location_data(wing_length, kipps_distance)
 
     return Response(
             map_data.to_json(orient="records"),

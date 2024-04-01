@@ -1,18 +1,50 @@
 /// <reference types="d3" />
 /// <reference types="topojson" />
 
-async function showMap() {
+let wingLengthSlider = document.getElementById("winglength-slider")
+let wingLengthLabel = document.getElementById("winglength-label")
+
+let kippsSlider = document.getElementById("kipps-slider")
+let kippsLabel = document.getElementById("kipps-label")
+
+
+let parameters = {
+  wingLength: wingLengthSlider.value,
+  kippsDistance: kippsSlider.value,
+}
+
+
+// Can use "oninput" but may be slow
+wingLengthSlider.onmouseup = function() {
+    updatePoints();
+}
+
+wingLengthSlider.oninput = function() {
+  if (parameters.wingLength != wingLengthSlider.value) {
+    parameters.wingLength = wingLengthSlider.value
+
+    wingLengthLabel.innerHTML = `Wing Length: ${parameters.wingLength}`;
+  }
+}
+
+kippsSlider.onmouseup = function() {
+    updatePoints();
+}
+
+kippsSlider.oninput = function() {
+  if (parameters.kippsDistance != kippsSlider.value) {
+    parameters.kippsDistance = kippsSlider.value
+
+    kippsLabel.innerHTML = `Kipps Distance: ${parameters.kippsDistance}`;
+  }
+}
+
+wingLengthLabel.innerHTML = `Wing Length: ${wingLengthSlider.value}`;
+kippsLabel.innerHTML = `Kipps Distance: ${kippsSlider.value}`;
+
+
+async function initMap() {
   let topology = await d3.json("/api/map-topology")
-  console.log(topology)
-
-  let features = topojson.feature(topology, topology.objects.countries).features;
-  console.log(features)
-
-  let data = await d3.json("api/locations")
-  console.log(data)
-
-  const xAccessor = d => path.projection()([d.Longitude, d.Latitude])[0]
-  const yAccessor = d => path.projection()([d.Longitude, d.Latitude])[1]
 
   const path = d3.geoPath().projection(d3.geoEqualEarth())
 
@@ -31,17 +63,31 @@ async function showMap() {
     .attr("stroke", "black")
     .attr("d", path)  
 
-  
-  // Draw all centroids on the map
+  updatePoints();
+}
+
+
+async function updatePoints() {
+  const data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}`)
+
+  const svg = d3.select("#map svg")
+  const path = d3.geoPath().projection(d3.geoEqualEarth())
+
+  const xAccessor = d => path.projection()([d.Longitude, d.Latitude])[0]
+  const yAccessor = d => path.projection()([d.Longitude, d.Latitude])[1]
+
+  svg.selectAll("circle").remove();
+
   svg.append("g")
     .attr("fill", "red")
     .attr("fill-opacity", 0.25)
-    .selectAll()
+    .selectAll("circle")
     .data(data)
     .join("circle")
     .attr("cx", d => xAccessor(d))
     .attr("cy", d => yAccessor(d))
-    .attr("r", 1)
+    .attr("r", 2)
 }
 
-showMap();
+initMap();
+
