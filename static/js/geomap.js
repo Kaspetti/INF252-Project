@@ -9,7 +9,7 @@ async function showMap() {
   console.log(features)
 
   let data = await d3.json("api/locations")
-  console.log(data[0])
+  console.log(data)
 
   const xAccessor = d => path.projection()([d.Longitude, d.Latitude])[0]
   const yAccessor = d => path.projection()([d.Longitude, d.Latitude])[1]
@@ -18,9 +18,9 @@ async function showMap() {
 
   const svg = d3.select("#map")
     .append("svg")
-    .attr("width", 975)
-    .attr("height", 610)
-    .attr("viewBox", [0, 0, 975, 610])
+    .attr("width", 1280)
+    .attr("height", 720)
+    .attr("viewBox", [0, 0, 1280, 720])
     .attr("style", "width: 100%; height: auto; height: intrinsic;");
 
 
