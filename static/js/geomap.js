@@ -1,46 +1,49 @@
-/// <reference types="d3" />
 /// <reference types="topojson" />
+/// <reference types="d3" />
 
-let wingLengthSlider = document.getElementById("winglength-slider")
-let wingLengthLabel = document.getElementById("winglength-label")
-
-let kippsSlider = document.getElementById("kipps-slider")
-let kippsLabel = document.getElementById("kipps-label")
+let wingLengthInput = document.getElementById("winglength-input")
+let kippsInput = document.getElementById("kipps-input")
+let massInput = document.getElementById("mass-input")
 
 
 let parameters = {
-  wingLength: wingLengthSlider.value,
-  kippsDistance: kippsSlider.value,
+  wingLength: wingLengthInput.value,
+  kippsDistance: kippsInput.value,
+  mass: massInput.value,
 }
 
 
-// Can use "oninput" but may be slow
-wingLengthSlider.onmouseup = function() {
-    updatePoints();
-}
+wingLengthInput.oninput = function() {
+  const inputValue = wingLengthInput.value
 
-wingLengthSlider.oninput = function() {
-  if (parameters.wingLength != wingLengthSlider.value) {
-    parameters.wingLength = wingLengthSlider.value
+  if (parameters.wingLength != inputValue && inputValue !== "") {
+    parameters.wingLength = inputValue
 
-    wingLengthLabel.innerHTML = `Wing Length: ${parameters.wingLength}`;
+    updatePoints()
   }
 }
 
-kippsSlider.onmouseup = function() {
+
+kippsInput.oninput = function() {
+  const inputValue = kippsInput.value
+
+  if (parameters.kippsDistance != inputValue && inputValue !== "") {
+    parameters.kippsDistance = inputValue
+
     updatePoints();
-}
-
-kippsSlider.oninput = function() {
-  if (parameters.kippsDistance != kippsSlider.value) {
-    parameters.kippsDistance = kippsSlider.value
-
-    kippsLabel.innerHTML = `Kipps Distance: ${parameters.kippsDistance}`;
   }
 }
 
-wingLengthLabel.innerHTML = `Wing Length: ${wingLengthSlider.value}`;
-kippsLabel.innerHTML = `Kipps Distance: ${kippsSlider.value}`;
+
+massInput.oninput = function() {
+  const inputValue = massInput.value
+
+  if (parameters.mass != inputValue && inputValue !== "") {
+    parameters.mass = inputValue
+
+    updatePoints();
+  }
+}
 
 
 async function initMap() {
@@ -68,7 +71,7 @@ async function initMap() {
 
 
 async function updatePoints() {
-  const data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}`)
+  const data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
 
   const svg = d3.select("#map svg")
   const path = d3.geoPath().projection(d3.geoEqualEarth())

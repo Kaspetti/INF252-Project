@@ -14,7 +14,9 @@ def index():
 def locations():
     wing_length = int(request.args.get("wing-length"))
     kipps_distance = int(request.args.get("kipps-distance"))
-    map_data = get_location_data(wing_length, kipps_distance)
+    mass = int(request.args.get("mass"))
+
+    map_data = get_location_data(wing_length, kipps_distance, mass)
 
     return Response(
             map_data.to_json(orient="records"),
