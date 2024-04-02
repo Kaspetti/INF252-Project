@@ -14,6 +14,8 @@ let parameters = {
   wingLength: wingLengthInput.value,
   kippsDistance: kippsInput.value,
   mass: massInput.value,
+
+  projection: projectionSelect.value,
 }
 
 
@@ -51,8 +53,8 @@ massInput.oninput = function() {
 
 
 projectionSelect.oninput = function() {
-  const projection = projectionSelect.value
-  switch (projection) {
+  parameters.projection = projectionSelect.value
+  switch (parameters.projection) {
     case "equalearth":
       path.projection(d3.geoEqualEarth())
       break;
@@ -126,9 +128,16 @@ async function updatePoints() {
 // Function to calculate the scale factor for a given latitude
 // in the Equal Earth projection
 function getScaleFactorForLatitude(latitude) {
-  const phi = latitude * Math.PI / 180; // Convert latitude to radians
-  const scaleFactor = Math.cos(phi / (2 * Math.sqrt(2))) / Math.sqrt(2);
-  return scaleFactor;
+  const phi = latitude * Math.PI / 180;
+
+  switch (parameters.projection) {
+    case "equalearth":
+      return Math.cos(phi / (2 * Math.sqrt(2))) / Math.sqrt(2);
+    case "mercator":
+      return 1 / Math.cos(phi);
+    default:
+      return 1;
+  }
 }
 
 initMap();
