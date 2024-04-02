@@ -5,6 +5,10 @@ let wingLengthInput = document.getElementById("winglength-input")
 let kippsInput = document.getElementById("kipps-input")
 let massInput = document.getElementById("mass-input")
 
+let projectionSelect = document.getElementById("projection")
+const path = d3.geoPath().projection(d3.geoEqualEarth())
+
+
 
 let parameters = {
   wingLength: wingLengthInput.value,
@@ -46,10 +50,27 @@ massInput.oninput = function() {
 }
 
 
+projectionSelect.oninput = function() {
+  const projection = projectionSelect.value
+  switch (projection) {
+    case "equalearth":
+      path.projection(d3.geoEqualEarth())
+      break;
+    case "mercator":
+      path.projection(d3.geoMercator())
+      break;
+  }
+
+  const svg = d3.select("#map svg")
+  svg.selectAll("path")
+    .attr("d", path)
+
+  updatePoints()
+}
+
+
 async function initMap() {
   let topology = await d3.json("/api/map-topology")
-
-  const path = d3.geoPath().projection(d3.geoEqualEarth())
 
   const svg = d3.select("#map")
     .append("svg")
@@ -74,7 +95,6 @@ async function updatePoints() {
   const data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
 
   const svg = d3.select("#map svg")
-  const path = d3.geoPath().projection(d3.geoEqualEarth())
 
   const xAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
   const yAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]

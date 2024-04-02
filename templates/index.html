@@ -13,19 +13,26 @@
 
   </head>
   <body>
-    <div id="mapcontainer">
+    <div id="mapcontainer" style=>
       <h2>Measurement Locations</h2>
 
-      <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length</label>
+      <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length: </label>
       <input type="number" value="50" id="winglength-input" name="winglength-input">
       <br> 
-      <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance</label>
+      <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance: </label>
       <input type="number" value="20" id="kipps-input" name="kipps-input">
       <br> 
-      <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass</label>
+      <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass: </label>
       <input type="number" value="50" id="mass-input" name="mass-input">
+      <br>
 
-      <div id="map" style="width: 1280px; height: 720px;"></div>
+      <label style="min-width: 150px; display: inline-block" for="projection">Projection: </label>
+      <select name="projection" id="projection">
+        <option value="equalearth">EqualEarth</option>
+        <option value="mercator">Mercator</option>
+      </select>
+
+      <div id="map"></div>
     </div>
   </body>
 
