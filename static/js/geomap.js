@@ -79,13 +79,24 @@ async function updatePoints() {
   const yAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
 
   const radiusAccessor = function(d) {
-    const earthRadiusKm = 6371;
+    //const earthRadiusKm = 6371;
+
+    //// Get the scale factor for the given latitude
+    //const scaleFactor = path.projection().scale() * getScaleFactorForLatitude(d.CentroidLatitude);
+
     const radiusKm = Math.sqrt(d.RangeSize / Math.PI);
 
-    // Get the scale factor for the given latitude
-    const scaleFactor = path.projection().scale() * getScaleFactorForLatitude(d.CentroidLatitude);
+    const latDist = 111;
+    const x = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
+    const y = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
+    const newX = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[0]
+    const newY = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[1]
 
-    return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
+    const kmInPx = Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) / latDist
+    return radiusKm * kmInPx;
+
+
+    //return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
   }
 
   svg.selectAll("circle").remove();
@@ -99,6 +110,32 @@ async function updatePoints() {
     .attr("cx", d => xAccessor(d))
     .attr("cy", d => yAccessor(d))
     .attr("r", d => radiusAccessor(d))
+
+  svg.selectAll("circle")
+    .on("mouseenter", onMouseEnter)
+    .on("mouseleave", onMouseLeave)
+
+  const tooltip = d3.select("#tooltip")
+
+  function onMouseEnter(e, d) {
+    tooltip.html(`
+      Species: ${d.Species}<br>
+      Wing Length: ${d.WingLength}<br>
+      Kipps Distance: ${d.KippsDistance}<br>
+      Mass: ${d.Mass}<br>
+      Range Size (DEBUG): ${d.RangeSize}
+    `)
+
+    // move tooltip to dot position, with % shift so is centered, not top-left positioned
+    tooltip.style("transform", `translate(${e.clientX}px, ${e.clientY}px)`)
+
+    tooltip.style("opacity", 1)   
+  }
+
+  function onMouseLeave() {
+    tooltip.style("opacity", 0)
+
+  }
 }
 
 
