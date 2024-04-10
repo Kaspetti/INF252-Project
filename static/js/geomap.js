@@ -102,7 +102,7 @@ async function updatePoints() {
   svg.selectAll("circle").remove();
 
   svg.append("g")
-    .attr("fill", "red")
+    .attr("fill", "purple")
     .attr("fill-opacity", 0.25)
     .selectAll("circle")
     .data(data)
