@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("gear.html")
 
 
 @app.route("/api/map")
@@ -17,4 +17,21 @@ def get_map():
     return Response(
             map_data.to_json(orient="records"),
             mimetype="application/json"
+    )
+
+@app.route("/api/wing")
+def get_wings():
+    wing_data = get_wing_data()
+    return Response(
+        wing_data.to_json(orient="records"),
+        mimetype="application/json"
+    )
+
+
+@app.route("/api/bird_name")
+def get_name():
+    name_data = get_bird_name()
+    return Response(
+        name_data.to_json(orient="records"),
+        mimetype="application/json"
     )
