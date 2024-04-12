@@ -12,7 +12,7 @@ pip install flask pandas
 ```
 
 In order to run the program call the following command:
-```
+```sh
 flask run
 ```
 and go to the link provided by flask in a browser.
