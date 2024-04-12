@@ -45,4 +45,3 @@ def get_name():
 @app.route("/api/map-topology")
 def map_topology():
     return send_file("./static/data/countries-110m.json", mimetype="application/json")
-
