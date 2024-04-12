@@ -62,7 +62,7 @@ async function initMap() {
   // Draw the map
   svg.append("path")
     .datum(topojson.feature(topology, topology.objects.countries))
-    .attr("fill", "#ddd")
+    .attr("fill", "#eee")
     .attr("stroke", "black")
     .attr("d", path)  
 
@@ -122,8 +122,7 @@ async function updatePoints() {
       Species: ${d.Species}<br>
       Wing Length: ${d.WingLength}<br>
       Kipps Distance: ${d.KippsDistance}<br>
-      Mass: ${d.Mass}<br>
-      Range Size (DEBUG): ${d.RangeSize}
+      Mass: ${d.Mass}
     `)
 
     // move tooltip to dot position, with % shift so is centered, not top-left positioned
