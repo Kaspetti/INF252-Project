@@ -110,6 +110,7 @@ async function updatePoints() {
     .attr("cx", d => xAccessor(d))
     .attr("cy", d => yAccessor(d))
     .attr("r", d => radiusAccessor(d))
+    .attr("stroke", "#000")
 
   svg.selectAll("circle")
     .on("mouseenter", onMouseEnter)
