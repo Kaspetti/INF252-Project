@@ -8,11 +8,39 @@
     <title>INF252-Project</title>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
 
 
+    <style>
+      .tooltip { 
+        opacity: 0;
+        position: absolute;
+        top: -15px;
+        padding: 0.6em 1em;
+        background: #fff;
+        border: 0.5px solid #bbbbbb;
+        transition: all 0.1s ease-out;
+        pointer-events:none;
+      }
+    </style>
   </head>
   <body>
-    <div id="wrapper"></div>
+    <div id="mapcontainer" style=>
+      <h2>Measurement Locations</h2>
+
+      <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length: </label>
+      <input type="number" value="90" id="winglength-input" name="winglength-input">
+      <br> 
+      <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance: </label>
+      <input type="number" value="10" id="kipps-input" name="kipps-input">
+      <br> 
+      <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass: </label>
+      <input type="number" value="10" id="mass-input" name="mass-input">
+
+      <div id="map"></div>
+        <div id="tooltip" class="tooltip">
+        </div>
+    </div>
   </body>
 
   <script src={{ url_for('static', filename='./js/geomap.js') }}></script>
