@@ -63,7 +63,7 @@ async function initMap() {
   svg.append("path")
     .datum(topojson.feature(topology, topology.objects.countries))
     .attr("fill", "#eee")
-    .attr("stroke", "black")
+    .attr("stroke", "grey")
     .attr("d", path)  
 
   updatePoints();
@@ -110,7 +110,7 @@ async function updatePoints() {
     .attr("cx", d => xAccessor(d))
     .attr("cy", d => yAccessor(d))
     .attr("r", d => radiusAccessor(d))
-    .attr("stroke", "#000")
+    //.attr("stroke", "#000")
 
   svg.selectAll("circle")
     .on("mouseenter", onMouseEnter)
