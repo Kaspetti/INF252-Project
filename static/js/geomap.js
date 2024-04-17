@@ -119,7 +119,9 @@ async function updatePoints() {
         const d2y = yAccessor(d2)
         const d2r = radiusAccessor(d2)
 
-        if (Math.sqrt(Math.pow(d1x - d2x, 2) + Math.pow(d1y - d2y, 2)) < d1r + d2r) {
+        const maxDistSqrd = (d1r + d2r)*(d1r + d2r)
+
+        if (Math.pow(d1x - d2x, 2) + Math.pow(d1y - d2y, 2) < maxDistSqrd) {
           clusters[clusters.length - 1].push(d2)
           added.push(d2)
         }
