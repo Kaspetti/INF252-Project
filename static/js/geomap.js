@@ -7,6 +7,7 @@ let massInput = document.getElementById("mass-input")
 
 const path = d3.geoPath().projection(d3.geoEqualEarth())
 
+const hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]
 
 let parameters = {
   wingLength: wingLengthInput.value,
@@ -71,7 +72,7 @@ async function initMap() {
 
 
 async function updatePoints() {
-  const data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
+  let data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
 
   const svg = d3.select("#map svg")
 
@@ -101,15 +102,44 @@ async function updatePoints() {
 
   svg.selectAll("circle").remove();
 
-  svg.append("g")
-    .attr("fill", "purple")
-    .attr("fill-opacity", 0.25)
-    .selectAll("circle")
-    .data(data)
-    .join("circle")
-    .attr("cx", d => xAccessor(d))
-    .attr("cy", d => yAccessor(d))
-    .attr("r", d => radiusAccessor(d))
+  // Cluster all overlapping circles
+  let clusters = []
+  while (data.length > 0) {
+    clusters.push([data.pop()])
+
+    for (let i = 0; i < clusters[clusters.length - 1].length; i++) {
+      const d1 = clusters[clusters.length - 1][i]
+      const d1x = xAccessor(d1)
+      const d1y = yAccessor(d1)
+      const d1r = radiusAccessor(d1)
+
+      let added = []
+      data.forEach(d2 => {
+        const d2x = xAccessor(d2)
+        const d2y = yAccessor(d2)
+        const d2r = radiusAccessor(d2)
+
+        if (Math.sqrt(Math.pow(d1x - d2x, 2) + Math.pow(d1y - d2y, 2)) < d1r + d2r) {
+          clusters[clusters.length - 1].push(d2)
+          added.push(d2)
+        }
+      })
+
+      data = data.filter(d => !added.includes(d))
+    }
+  }
+
+  clusters.forEach(c => {
+    svg.append("g")
+      .attr("fill", generateNewColor())
+      .attr("fill-opacity", 0.5)
+      .selectAll("circle")
+      .data(c)
+      .join("circle")
+      .attr("cx", d => xAccessor(d))
+      .attr("cy", d => yAccessor(d))
+      .attr("r", d => radiusAccessor(d))
+  })
     //.attr("stroke", "#000")
 
   svg.selectAll("circle")
@@ -144,6 +174,23 @@ async function updatePoints() {
 function getScaleFactorForLatitude(latitude) {
   const phi = latitude * Math.PI / 180;
   return Math.cos(phi / (2 * Math.sqrt(2))) / Math.sqrt(2);
+}
+
+
+function getCharacter(index) {
+  return hexCharacters[index]
+}
+
+// https://www.freecodecamp.org/news/generate-colors-in-javascript/
+function generateNewColor() {
+  let hexColorRep = "#"
+
+  for (let index = 0; index < 6; index++){
+    const randomPosition = Math.floor ( Math.random() * hexCharacters.length ) 
+    hexColorRep += getCharacter( randomPosition )
+  }
+
+  return hexColorRep
 }
 
 initMap();
