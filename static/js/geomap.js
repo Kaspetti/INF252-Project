@@ -49,6 +49,31 @@ massInput.oninput = function() {
 }
 
 
+const xAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
+const yAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
+
+const radiusAccessor = function(d) {
+  //const earthRadiusKm = 6371;
+
+  //// Get the scale factor for the given latitude
+  //const scaleFactor = path.projection().scale() * getScaleFactorForLatitude(d.CentroidLatitude);
+
+  const radiusKm = Math.sqrt(d.RangeSize / Math.PI);
+
+  const latDist = 111;
+  const x = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
+  const y = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
+  const newX = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[0]
+  const newY = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[1]
+
+  const kmInPx = Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) / latDist
+  return radiusKm * kmInPx;
+
+
+  //return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
+}
+
+
 async function initMap() {
   let topology = await d3.json("/api/map-topology")
 
@@ -76,34 +101,15 @@ async function updatePoints() {
 
   const svg = d3.select("#map svg")
 
-  const xAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
-  const yAccessor = d => path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
-
-  const radiusAccessor = function(d) {
-    //const earthRadiusKm = 6371;
-
-    //// Get the scale factor for the given latitude
-    //const scaleFactor = path.projection().scale() * getScaleFactorForLatitude(d.CentroidLatitude);
-
-    const radiusKm = Math.sqrt(d.RangeSize / Math.PI);
-
-    const latDist = 111;
-    const x = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[0]
-    const y = path.projection()([d.CentroidLongitude, d.CentroidLatitude])[1]
-    const newX = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[0]
-    const newY = path.projection()([d.CentroidLongitude, d.CentroidLatitude + 1])[1]
-
-    const kmInPx = Math.sqrt(Math.pow(x - newX, 2) + Math.pow(y - newY, 2)) / latDist
-    return radiusKm * kmInPx;
-
-
-    //return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
-  }
-
   // Cluster all overlapping circles
   let clusters = []
+  let hulls = []
+  const resolution = 2
+
   while (data.length > 0) {
-    clusters.push([data.pop()])
+    let p = data.pop()
+    clusters.push([p])
+    let points = generateCircleOutlinePoints(p, resolution)
 
     for (let i = 0; i < clusters[clusters.length - 1].length; i++) {
       const d1 = clusters[clusters.length - 1][i]
@@ -122,45 +128,16 @@ async function updatePoints() {
         if (Math.pow(d1x - d2x, 2) + Math.pow(d1y - d2y, 2) < maxDistSqrd) {
           clusters[clusters.length - 1].push(d2)
           added.push(d2)
+
+          points = points.concat(generateCircleOutlinePoints(d2, resolution))
         }
       })
 
       data = data.filter(d => !added.includes(d))
     }
+
+    hulls.push(hull(points))
   }
-
-  let outlines = []
-  let hulls = []
-  let resolution = 10
-
-  clusters.forEach(c => {
-    let outline = []
-    c.forEach(c1 => {
-      let angle = 0.0
-
-      const cx = xAccessor(c1)
-      const cy = yAccessor(c1)
-      const radius = radiusAccessor(c1)
-
-      let circumfrence = 2 * Math.PI * radius
-      let numPoints = circumfrence / resolution
-      let step = 2*Math.PI / numPoints
-
-      while(angle < 2*Math.PI) {
-        const px = cx + radius * Math.cos(angle)
-        const py = cy + radius * Math.sin(angle)
-
-        outline.push([px, py])
-
-        angle += step
-      }
-    })
-
-    let outlineHull = hull(outline)
-    
-    outlines.push(outline)
-    hulls.push(outlineHull)
-  })
 
   svg.selectAll("circle").remove();
   svg.selectAll("path.area").remove();
@@ -169,18 +146,6 @@ async function updatePoints() {
     .x(d => d[0])
     .y(d => d[1])
     .curve(d3.curveCatmullRom)
-
-  //outlines.forEach(a => {
-  //  svg.append("g")
-  //    .attr("fill", "blue")
-  //    .attr("fill-opacity", 1)
-  //    .selectAll("circle")
-  //    .data(a)
-  //    .join("circle")
-  //    .attr("cx", d => d[0])
-  //    .attr("cy", d => d[1])
-  //    .attr("r", 2)
-  //})
 
   hulls.forEach(h => {
     svg.append("path")
@@ -239,6 +204,29 @@ function generateNewColor() {
   }
 
   return hexColorRep
+}
+
+function generateCircleOutlinePoints(circle, resolution) {
+  let angle = 0.0
+  const points = []
+
+  const cx = xAccessor(circle)
+  const cy = yAccessor(circle)
+  const cr = radiusAccessor(circle)
+
+  const circumfrence = 2 * Math.PI * cr
+  const numPoints = circumfrence / resolution
+  const step = 2*Math.PI / numPoints
+
+  while(angle < 2*Math.PI) {
+    const px = cx + cr * Math.cos(angle)
+    const py = cy + cr * Math.sin(angle)
+
+    points.push([px, py])
+    angle += step
+  }
+
+  return points
 }
 
 initMap();
