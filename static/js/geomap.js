@@ -100,8 +100,6 @@ async function updatePoints() {
     //return radiusKm * scaleFactor / (2 * Math.PI * earthRadiusKm);
   }
 
-  svg.selectAll("circle").remove();
-
   // Cluster all overlapping circles
   let clusters = []
   while (data.length > 0) {
@@ -131,18 +129,66 @@ async function updatePoints() {
     }
   }
 
+  let outlines = []
+  let hulls = []
+  let resolution = 10
+
   clusters.forEach(c => {
-    svg.append("g")
+    let outline = []
+    c.forEach(c1 => {
+      let angle = 0.0
+
+      const cx = xAccessor(c1)
+      const cy = yAccessor(c1)
+      const radius = radiusAccessor(c1)
+
+      let circumfrence = 2 * Math.PI * radius
+      let numPoints = circumfrence / resolution
+      let step = 2*Math.PI / numPoints
+
+      while(angle < 2*Math.PI) {
+        const px = cx + radius * Math.cos(angle)
+        const py = cy + radius * Math.sin(angle)
+
+        outline.push([px, py])
+
+        angle += step
+      }
+    })
+
+    let outlineHull = hull(outline)
+    
+    outlines.push(outline)
+    hulls.push(outlineHull)
+  })
+
+  svg.selectAll("circle").remove();
+  svg.selectAll("path.area").remove();
+
+  const lineGenerator = d3.line()
+    .x(d => d[0])
+    .y(d => d[1])
+    .curve(d3.curveCatmullRom)
+
+  //outlines.forEach(a => {
+  //  svg.append("g")
+  //    .attr("fill", "blue")
+  //    .attr("fill-opacity", 1)
+  //    .selectAll("circle")
+  //    .data(a)
+  //    .join("circle")
+  //    .attr("cx", d => d[0])
+  //    .attr("cy", d => d[1])
+  //    .attr("r", 2)
+  //})
+
+  hulls.forEach(h => {
+    svg.append("path")
+      .attr("class", "area")
       .attr("fill", generateNewColor())
       .attr("fill-opacity", 0.5)
-      .selectAll("circle")
-      .data(c)
-      .join("circle")
-      .attr("cx", d => xAccessor(d))
-      .attr("cy", d => yAccessor(d))
-      .attr("r", d => radiusAccessor(d))
+      .attr("d", lineGenerator(h))
   })
-    //.attr("stroke", "#000")
 
   svg.selectAll("circle")
     .on("mouseenter", onMouseEnter)
