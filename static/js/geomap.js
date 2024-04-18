@@ -9,6 +9,8 @@ const path = d3.geoPath().projection(d3.geoEqualEarth())
 
 const hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]
 
+let focused = false
+
 let parameters = {
   wingLength: wingLengthInput.value,
   kippsDistance: kippsInput.value,
@@ -82,7 +84,7 @@ async function initMap() {
     .attr("width", 1280)
     .attr("height", 720)
     .attr("viewBox", [0, 0, 1280, 720])
-    .attr("style", "width: 100%; height: auto; height: intrinsic;");
+    .attr("style", "width: 100%; height: auto; height: intrinsic;")
 
 
   // Draw the map
@@ -91,6 +93,24 @@ async function initMap() {
     .attr("fill", "#eee")
     .attr("stroke", "grey")
     .attr("d", path)  
+    .on("click", onMapClick)
+
+  svg.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "transparent")
+    .on("click", onMapClick)
+
+  function onMapClick() {
+    focused = false
+
+    svg.selectAll("circle").remove();
+
+    const areas = document.getElementsByClassName("area")
+    for (let i = 0; i < areas.length; i++) {
+      areas[i].setAttribute("fill-opacity", 0.75)
+    }
+  }
 
   updatePoints();
 }
@@ -147,37 +167,71 @@ async function updatePoints() {
     .y(d => d[1])
     .curve(d3.curveCatmullRom)
 
-  hulls.forEach(h => {
+  hulls.forEach((h, i) => {
     svg.append("path")
       .attr("class", "area")
       .attr("fill", generateNewColor())
       .attr("fill-opacity", 0.5)
       .attr("d", lineGenerator(h))
+      .attr("path-id", i)
   })
 
-  svg.selectAll("circle")
+  svg.selectAll("path.area")
     .on("mouseenter", onMouseEnter)
     .on("mouseleave", onMouseLeave)
+    .on("click", onMouseClick)
 
-  const tooltip = d3.select("#tooltip")
+  function onMouseEnter(e) {
+    if (focused) {
+      return
+    }
 
-  function onMouseEnter(e, d) {
-    tooltip.html(`
-      Species: ${d.Species}<br>
-      Wing Length: ${d.WingLength}<br>
-      Kipps Distance: ${d.KippsDistance}<br>
-      Mass: ${d.Mass}
-    `)
+    const areas = document.getElementsByClassName("area")
+    for (let i = 0; i < areas.length; i++) {
+      const area = areas[i]
+      if (area.getAttribute("path-id") != e.target.getAttribute("path-id")) {
+        area.setAttribute("fill-opacity", 0.1)
+      }
+    }
 
-    // move tooltip to dot position, with % shift so is centered, not top-left positioned
-    tooltip.style("transform", `translate(${e.clientX}px, ${e.clientY}px)`)
-
-    tooltip.style("opacity", 1)   
+    e.target.setAttribute("fill-opacity", 1)
   }
 
-  function onMouseLeave() {
-    tooltip.style("opacity", 0)
+  function onMouseLeave(e) {
+    if (focused) {
+      return
+    }
 
+    const areas = document.getElementsByClassName("area")
+    for (let i = 0; i < areas.length; i++) {
+      areas[i].setAttribute("fill-opacity", 0.75)
+    }
+  }
+
+  function onMouseClick(e) {
+    const areas = document.getElementsByClassName("area")
+    for (let i = 0; i < areas.length; i++) {
+      const area = areas[i]
+      if (area.getAttribute("path-id") != e.target.getAttribute("path-id")) {
+        area.setAttribute("fill-opacity", 0.1)
+      }
+    }
+
+    e.target.setAttribute("fill-opacity", 1)
+
+    focused = true
+    svg.selectAll("circle").remove();
+    const cluster = clusters[parseInt(e.target.getAttribute("path-id"))]
+
+    svg.append("g")
+      .attr("fill", invertColor(e.target.getAttribute("fill")))
+      .attr("fill-opacity", 0.2)
+      .selectAll("circle")
+      .data(cluster)
+      .join("circle")
+      .attr("cx", d => xAccessor(d))
+      .attr("cy", d => yAccessor(d))
+      .attr("r", d => radiusAccessor(d))
   }
 }
 
@@ -227,6 +281,32 @@ function generateCircleOutlinePoints(circle, resolution) {
   }
 
   return points
+}
+
+// https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
+function invertColor(hex) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    // invert color components
+    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+    // pad each with zeros and return
+    return '#' + padZero(r) + padZero(g) + padZero(b);
+}
+
+function padZero(str, len) {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
 }
 
 initMap();
