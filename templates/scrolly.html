@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"
+    <title>Scrolly Test</title>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+
+    <style>
+      #scroll {
+        position: relative;
+      }
+
+      .scroll_graphic {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: auto;
+        width: 100%;
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+
+      .scroll_graphic.is-fixed {
+        position: fixed;
+      }
+
+      .scroll_graphic.is-bottom {
+        bottom: 0;
+        top: auto;
+      }
+      
+      .scroll_graphic.chart {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        -moz-transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+      }
+
+      .scroll_text {
+        padding: 0 1rem;
+        max-width: 30rem;
+      }
+
+      .step {
+        opacity: 0;
+        padding: 1rem;
+      }
+
+      .step.is-active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section id="scroll">
+      <div class="scroll_graphic">
+        <div class="chart">
+          <p>0</p>
+        </div>
+      </div>
+
+      <div class="scroll_text">
+        <div class="step" data-step="1">
+          <p>STEP 1</p>
+        </div>
+        <div class="step" data-step="2">
+          <p>STEP 2</p>
+        </div>
+        <div class="step" data-step="3">
+          <p>STEP 3</p>
+        </div>
+        <div class="step" data-step="4">
+          <p>STEP 4</p>
+        </div>
+      </div>
+    </section>
+
+    <script src={{ url_for('static', filename='./js/scrolly.js') }}></script>
+  </body>
+</html>
