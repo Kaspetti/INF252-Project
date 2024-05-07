@@ -5,66 +5,101 @@
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
 
     <style>
-      #scroll {
+      #scrolly {
         position: relative;
-      }
-
-      .scroll_graphic {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: auto;
-        width: 100%;
-        -webkit-transform: translate3d(0, 0, 0);
-        -moz-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-      }
-
-      .scroll_graphic .chart {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        -moz-transform: translateY(-50%);
-        -webkit-transform: translateY(-50%);
-        transform: translateY(-50%);
-        background-color: red;
-      }
-
-      .scroll__text {
-        padding: 0 1rem;
-        max-width: 30rem;
-      }
-
-      .step {
-        opacity: 0;
+        background-color: #f3f3f3;
         padding: 1rem;
       }
 
-      .step.is-active {
-        opacity: 1;
+      article {
+        position: relative;
+        padding: 0;
+        max-width: 20rem;
+        /* margin: 0 auto; */
+      }
+
+      figure {
+        position: -webkit-sticky;
+        position: sticky;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        /* background-color: #8a8a8a; */
+        z-index: 0;
+      }
+
+      figure canvas {
+        position: absolute;
+        right: 0;
+      }
+
+      .step {
+        margin: 0 auto 2rem auto;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .step:last-child {
+        margin-bottom: 0;
+      }
+
+      .step.is-active p {
+        background-color: goldenrod;
+        color: #3b3b3b;
+      }
+
+      .step p {
+        text-align: center;
+        padding: 1rem;
+        font-size: 1.5rem;
+        background-color: #3b3b3b;
       }
     </style>
   </head>
 
   <body>
-    <div id="scroll">
-      <div class="scroll_graphic">
-        <div class="chart">
-          <p>Chart</p>
-        </div>
-      </div>
+    <main>
+      <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length: </label>
+      <input type="number" value="70" id="winglength-input" name="winglength-input">
+      <br> 
+      <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance: </label>
+      <input type="number" value="10" id="kipps-input" name="kipps-input">
+      <br> 
+      <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass: </label>
+      <input type="number" value="7" id="mass-input" name="mass-input">
 
-      <div class="scroll_text">
-        <div class="step" data-step="a">0</div>
-        <div class="step" data-step="b">1</div>
-        <div class="step" data-step="c">2</div>
-      </div>
-    </div>
+      <section id="scrolly">
+        <figure>
+          <canvas id="gears"></canvas>
+          <div id="geomap"></div>
+        </figure>
+
+        <article>
+          <div class="step" data-step="1">
+            <p>STEP 1</p> 
+          </div>
+          <div class="step" data-step="2">
+            <p>STEP 2</p> 
+          </div>
+          <div class="step" data-step="3">
+            <p>STEP 3</p> 
+          </div>
+          <div class="step" data-step="4">
+            <p>STEP 4</p> 
+          </div>
+        </article>
+      </section>
+    </main>
 
     <script src={{ url_for('static', filename='./js/p5.js') }}></script>
     <script src={{ url_for('static', filename='./js/p5Chart.js') }}></script>
     <script src={{ url_for('static', filename='./js/scrolly.js') }}></script>
+    <script src={{ url_for('static', filename='./js/geomap.js') }}></script>
   </body>
 </html>

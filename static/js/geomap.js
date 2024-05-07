@@ -79,7 +79,7 @@ const radiusAccessor = function(d) {
 async function initMap() {
   let topology = await d3.json("/api/map-topology")
 
-  const svg = d3.select("#map")
+  const svg = d3.select("#scrolly geomap")
     .append("svg")
     .attr("width", 1280)
     .attr("height", 720)

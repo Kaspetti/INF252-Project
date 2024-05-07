@@ -1,33 +1,76 @@
 //Simple Gears(visual simulation test code).
 //Built with Processing 2.03 by Adrian Fernandez. Miami, FL. USA. (07-31-2014).
 
-minNumberOfTeeth=8;
-maxNumberOfTeeth=80;
+minNumberOfTeeth=6;
+maxNumberOfTeeth=100;
 theta = 0;
 FPS = 60
+rpmIn = 5000
 
+x1 = 100;
+y1 = 0;
+x2 = 200;
+y2 = 0;
+angle = 0;
+len=300
+speed = 0.01;
+distance = 100
+
+function findRatio(fps){
+  rpm = 60*Math.floor(fps);
+  return rpm
+}
+
+function findFPS(mass, area, swipe){
+  fps = 4* sqrt(mass/area)/(swipe*swipe)
+  return fps
+}
+
+function calcGearRatio(inRPM, outRPM){
+  let firstGear = 0;
+  let lastGear = 0;
+  //lastGear = firstGear/(outRPM/inRPM)
+  for(firstGear=6; firstGear<30; firstGear++){
+    for(lastGear=1; lastGear<100; lastGear++) {
+     if((firstGear/lastGear) == (outRPM/inRPM)){
+        break
+      }
+    }
+    if((firstGear/lastGear) == (outRPM/inRPM)){
+      break
+    }
+  }
+  return [firstGear, lastGear]
+}
 
 function setup()
 {
-  createCanvas(1350, 690);  
+  createCanvas(640, 600, document.getElementById("gears"));  
   frameRate(FPS);
   textAlign(CENTER);
   textSize(18);
+  //Wing
+  origin = createVector(width/2,3*height/4)
+  rightWing = createVector(0, 0)
+  leftWing = createVector(0, 0)
   // Sliders
-  createP("Degrees per frame (ideal)");
-  dpsSlider = createSlider(0.1, 3.0, 0.5, 0.1);
+  createP("RPM on first gear");
+  dpsSlider = createSlider(1, 30.0, 0.5, 0.1);
 }
 
 
 function draw()
 {
+  
+  rpmOut = findRatio(findFPS(160,4,1))
+  let [firstRate, lastRate] = calcGearRatio(rpmIn,rpmOut);
   dps = dpsSlider.elt.value;
-  background(0);  
-  teethAmount = 8;
+  background(255);  
+  teethAmount = firstRate;
   radio1=teethAmount*5;
   teethHeight=0.18*60; 
   centerPositionX=width/3;
-  centerPositionY=height/2;
+  centerPositionY=height/3;
   rotationDirection=1;
   rotationSpeed=1;
   drawGear(radio1, centerPositionX, centerPositionY, teethHeight, rotationDirection, rotationSpeed*theta, dps);
@@ -36,13 +79,13 @@ function draw()
   textSize(24);
   textAlign(LEFT);
   text(`RPM1: ${round(rpm1, 2)}`, 0, height - 3);
+  text(`Gear Ratio: ${[firstRate, lastRate]}`,50,50)
   
-  teethAmount = 20;
+  teethAmount = Math.floor((firstRate+lastRate)/2);
   radio2=teethAmount*5;  
   rotationDirection=-1;
   rotationSpeed=radio1/radio2;
-  centerPositionX=1*width/3+radio2+teethHeight+radio1;
-  centerPositionY=height/2; 
+  centerPositionX=centerPositionX+radio2+teethHeight+radio1;
   drawGear(radio2, centerPositionX, centerPositionY, teethHeight, rotationDirection, rotationSpeed*theta, dps); 
   
   let rpm2 = round(dps * FPS * rotationSpeed * 60 / 360, 2);
@@ -50,20 +93,44 @@ function draw()
   textAlign(CENTER);
   text(`RPM2: ${round(rpm2, 2)}`, width/2, height - 3);
   
-  teethAmount = 70
+  teethAmount = lastRate
   radio3=teethAmount*5;
   rotationDirection=1;
   rotationSpeed=radio1/radio3;
-  centerPositionX=1*width/3+radio3+teethHeight*2+radio1+radio2*2;
-  centerPositionY=height/2; 
+  centerPositionX=centerPositionX+radio3+teethHeight+radio2;
   drawGear(radio3, centerPositionX, centerPositionY, teethHeight, rotationDirection, rotationSpeed*theta, dps); 
-  fill(255);
   theta += 0.1
   
   let rpm3 = round(dps * FPS * rotationSpeed * 60 / 360, 2);
   textSize(24);
   textAlign(RIGHT);
-  text(`RPM3: ${round(rpm3, 2)}`, width-150, height - 3);
+  text(`RPM3: ${round(rpm3, 2)}`, width-10, height - 3);
+  
+  rightWing.x = origin.x + len*cos(angle)
+  rightWing.y = origin.y + len*sin(angle)
+  leftWing.x = origin.x - len*cos(-angle)
+  leftWing.y = origin.y - len*sin(-angle)
+  
+  fill(0);
+  strokeWeight(3)
+  ellipse(origin.x,origin.y,20,20);
+  strokeWeight(5);
+  line(origin.x,origin.y,rightWing.x,rightWing.y)
+  line(origin.x,origin.y,leftWing.x,leftWing.y)
+  if(angle > 0.3){
+    speed = -0.01;
+  }else if(angle < -0.7){
+    speed = 0.01;
+  }
+  angle += rpm3*speed/PI;
+  strokeWeight(2)
+  line(origin.x-300,origin.y+100,origin.x+300,origin.y+100)
+  line(origin.x-300,origin.y+110,origin.x-300,origin.y+90)
+  line(origin.x+300,origin.y+110,origin.x+300,origin.y+90)
+  textAlign(CENTER)
+  textSize(18)
+  text(`${distance} cm`,origin.x,origin.y+120)
+  
 }
 
 function drawGear(radio, centerPositionX, centerPositionY, teethHeight, rotationDirection, rotationSpeed, dps)

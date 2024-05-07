@@ -1,59 +1,63 @@
 /// <reference types="d3" />
 
-let container = d3.select('#scroll');
-let graphic = container.select('.scroll__graphic');
-let chart = graphic.select('.chart');
-let scrollText = container.select('.scroll__text');
-let step = scrollText.selectAll('.step');
+// using d3 for convenience
+var main = d3.select("main");
+var scrolly = main.select("#scrolly");
+var figure = scrolly.select("figure");
+var article = scrolly.select("article");
+var step = article.selectAll(".step");
 
-function onStepEnter(response) {
-	step.classed('is-active', function (d, i) {
-		return i === response.index;
-  })
+// initialize the scrollama
+var scroller = scrollama();
+
+// generic window resize listener event
+function handleResize() {
+  // 1. update height of step elements
+  var stepH = Math.floor(window.innerHeight * 0.75);
+  step.style("height", stepH + "px");
+
+  var figureHeight = window.innerHeight / 2;
+  var figureMarginTop = (window.innerHeight - figureHeight) / 2;
+
+  figure
+    .style("height", figureHeight + "px")
+    .style("top", figureMarginTop + "px");
+
+  // 3. tell scrollama to update new element dimensions
+  scroller.resize();
 }
 
+// scrollama event handlers
+function handleStepEnter(response) {
+  console.log(response);
+  // response = { element, direction, index }
 
-function resize() {
-	// 1. update height of step elements for breathing room between steps
-	let stepHeight = Math.floor(window.innerHeight * 0.75);
-	step.style('height', stepHeight + 'px');
+  // add color to current step only
+  step.classed("is-active", function (d, i) {
+    return i === response.index;
+  });
 
-	// 2. update height of graphic element
-	let bodyWidth = d3.select('body').node().offsetWidth;
-
-	graphic
-		.style('height', window.innerHeight + 'px');
-
-	// 3. update width of chart by subtracting from text width
-	let chartMargin = 32;
-	let textWidth = scrollText.node().offsetWidth;
-	let chartWidth = graphic.node().offsetWidth - textWidth - chartMargin;
-	// make the height 1/2 of viewport
-	let chartHeight = Math.floor(window.innerHeight / 2);
-
-	chart
-		.style('width', chartWidth + 'px')
-		.style('height', chartHeight + 'px');
-
-	// 4. tell scrollama to update new element dimensions
-	scroller.resize();
+  // update graphic based on step
+  figure.select("p").text(response.index + 1);
 }
 
 
 function init() {
-  const scroller = scrollama();
 
+  // 1. force a resize on load to ensure proper dimensions are sent to scrollama
+  handleResize();
+
+  // 2. setup the scroller passing options
+  // 		this will also initialize trigger observations
+  // 3. bind scrollama event handlers (this can be chained like below)
   scroller
     .setup({
-      container: "#scroll",
-      graphic: ".scroll_graphic",
-      text: ".scroll_text",
-      step: ".scroll_text .step",
-      offset: 0.5,
-      debug: true,
+      step: "#scrolly article .step",
+      offset: 0.33,
+      debug: false
     })
-    .onStepEnter(onStepEnter)
-    .resize(resize)
+    .onStepEnter(handleStepEnter);
 }
 
-init()
+// kick things off
+init();
