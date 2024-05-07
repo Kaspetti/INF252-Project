@@ -54,8 +54,8 @@ function setup()
   rightWing = createVector(0, 0)
   leftWing = createVector(0, 0)
   // Sliders
-  createP("RPM on first gear");
-  dpsSlider = createSlider(1, 30.0, 0.5, 0.1);
+  // createP("RPM on first gear");
+  // dpsSlider = createSlider(1, 30.0, 0.5, 0.1);
 }
 
 
@@ -64,7 +64,8 @@ function draw()
   clear()
   rpmOut = findRatio(findFPS(160,4,1))
   let [firstRate, lastRate] = calcGearRatio(rpmIn,rpmOut);
-  dps = dpsSlider.elt.value;
+  // dps = dpsSlider.elt.value;
+  dps = 1
   background('rgba(0,0,0,0)');  
   teethAmount = firstRate;
   radio1=teethAmount*5;
