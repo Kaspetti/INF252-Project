@@ -3,7 +3,7 @@ import pandas as pd
 
 def get_location_data(wing_length, kipps_distance, mass):
     df = pd.read_csv("./static/data/data.csv")
-    interval = 10
+    interval = 5
 
     winglength_mask = df['Wing.Length'].between(wing_length - interval, wing_length + interval)
     kipps_mask = df['Kipps.Distance'].between(kipps_distance - interval, kipps_distance + interval)

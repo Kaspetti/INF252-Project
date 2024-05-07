@@ -10,7 +10,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
 
-
     <style>
       .tooltip { 
         opacity: 0;
@@ -22,6 +21,10 @@
         transition: all 0.1s ease-out;
         pointer-events:none;
       }
+
+      circle {
+        pointer-events:none;
+      }
     </style>
   </head>
   <body>
@@ -29,13 +32,13 @@
       <h2>Measurement Locations</h2>
 
       <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length: </label>
-      <input type="number" value="90" id="winglength-input" name="winglength-input">
+      <input type="number" value="70" id="winglength-input" name="winglength-input">
       <br> 
       <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance: </label>
       <input type="number" value="10" id="kipps-input" name="kipps-input">
       <br> 
       <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass: </label>
-      <input type="number" value="10" id="mass-input" name="mass-input">
+      <input type="number" value="7" id="mass-input" name="mass-input">
 
       <div id="map"></div>
         <div id="tooltip" class="tooltip">
@@ -44,6 +47,7 @@
     <div id="gears"></div>
   </body>
 
+  <script src={{ url_for('static', filename='./js/hull.js') }}></script>
   <script src={{ url_for('static', filename='./js/geomap.js') }}></script>
   <script src={{ url_for('static', filename='./js/wing.js') }}></script>
 
