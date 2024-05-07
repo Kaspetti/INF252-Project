@@ -3,8 +3,8 @@
 let container = d3.select('#scroll');
 let graphic = container.select('.scroll__graphic');
 let chart = graphic.select('.chart');
-let text = container.select('.scroll__text');
-let step = text.selectAll('.step');
+let scrollText = container.select('.scroll__text');
+let step = scrollText.selectAll('.step');
 
 function onStepEnter(response) {
 	step.classed('is-active', function (d, i) {
@@ -26,7 +26,7 @@ function resize() {
 
 	// 3. update width of chart by subtracting from text width
 	let chartMargin = 32;
-	let textWidth = text.node().offsetWidth;
+	let textWidth = scrollText.node().offsetWidth;
 	let chartWidth = graphic.node().offsetWidth - textWidth - chartMargin;
 	// make the height 1/2 of viewport
 	let chartHeight = Math.floor(window.innerHeight / 2);

@@ -9,8 +9,7 @@ FPS = 60
 
 function setup()
 {
-  let dings = createCanvas(1350, 690);  
-  console.log(dings)
+  createCanvas(1350, 690);  
   frameRate(FPS);
   textAlign(CENTER);
   textSize(18);
