@@ -94,11 +94,11 @@ const radiusAccessor = function(d) {
 async function initMap() {
   let topology = await d3.json("/api/map-topology")
 
-  const svg = d3.select("#scrolly geomap")
+  const svg = d3.select("#geomap")
     .append("svg")
-    .attr("width", 1280)
-    .attr("height", 720)
-    .attr("viewBox", [0, 0, 1280, 720])
+     .attr("width", 1280)
+     .attr("height", 720)
+     .attr("viewBox", [0, 0, 1280, 720])
     .attr("style", "width: 100%; height: auto; height: intrinsic;")
 
 
@@ -134,7 +134,7 @@ async function initMap() {
 async function updatePoints() {
   let data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
 
-  const svg = d3.select("#map svg")
+  const svg = d3.select("#geomap svg")
 
   // Cluster all overlapping circles
   let clusters = []
@@ -183,8 +183,6 @@ async function updatePoints() {
     .curve(d3.curveCatmullRom)
 
   hulls.forEach((h, i) => {
-    console.log(colors[(i + colors.length / 2) % colors.length])
-
     svg.append("path")
       .attr("class", "area")
       .attr("fill", colors[i % colors.length])

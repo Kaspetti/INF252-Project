@@ -45,7 +45,7 @@ function calcGearRatio(inRPM, outRPM){
 
 function setup()
 {
-  createCanvas(640, 600, document.getElementById("gears"));  
+  createCanvas(window.innerWidth / 2, window.innerHeight / 2, document.getElementById("gears"));  
   frameRate(FPS);
   textAlign(CENTER);
   textSize(18);
@@ -61,11 +61,11 @@ function setup()
 
 function draw()
 {
-  
+  clear()
   rpmOut = findRatio(findFPS(160,4,1))
   let [firstRate, lastRate] = calcGearRatio(rpmIn,rpmOut);
   dps = dpsSlider.elt.value;
-  background(255);  
+  background('rgba(0,0,0,0)');  
   teethAmount = firstRate;
   radio1=teethAmount*5;
   teethHeight=0.18*60; 
@@ -124,12 +124,12 @@ function draw()
   }
   angle += rpm3*speed/PI;
   strokeWeight(2)
-  line(origin.x-300,origin.y+100,origin.x+300,origin.y+100)
-  line(origin.x-300,origin.y+110,origin.x-300,origin.y+90)
-  line(origin.x+300,origin.y+110,origin.x+300,origin.y+90)
+  line(origin.x-300,origin.y+70,origin.x+300,origin.y+70)
+  line(origin.x-300,origin.y+80,origin.x-300,origin.y+60)
+  line(origin.x+300,origin.y+80,origin.x+300,origin.y+60)
   textAlign(CENTER)
   textSize(18)
-  text(`${distance} cm`,origin.x,origin.y+120)
+  text(`${distance} cm`,origin.x,origin.y+90)
   
 }
 
@@ -179,3 +179,4 @@ function AdditionsBlock(radio)
   rotate(PI/20);
   ellipse(0, 0.85*radio, radio/15, radio/15);//counterWeight
 }
+
