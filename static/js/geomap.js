@@ -9,6 +9,21 @@ const path = d3.geoPath().projection(d3.geoEqualEarth())
 
 const hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]
 
+const colors = [
+  "#fcfe04",
+  "#fc9a04",
+  "#fc6605",
+  "#fc3204",
+  "#cc0204",
+  "#9c0264",
+  "#640264",
+  "#040364",
+  "#04319c",
+  "#022928",
+  "#309705",
+  "#65cb0b",
+]
+
 let focused = false
 
 let parameters = {
@@ -168,9 +183,12 @@ async function updatePoints() {
     .curve(d3.curveCatmullRom)
 
   hulls.forEach((h, i) => {
+    console.log(colors[(i + colors.length / 2) % colors.length])
+
     svg.append("path")
       .attr("class", "area")
-      .attr("fill", generateNewColor())
+      .attr("fill", colors[i % colors.length])
+      .attr("circle_fill", colors[(i + colors.length / 2) % colors.length])
       .attr("fill-opacity", 0.5)
       .attr("d", lineGenerator(h))
       .attr("path-id", i)
@@ -224,8 +242,8 @@ async function updatePoints() {
     const cluster = clusters[parseInt(e.target.getAttribute("path-id"))]
 
     svg.append("g")
-      .attr("fill", invertColor(e.target.getAttribute("fill")))
-      .attr("fill-opacity", 0.2)
+      .attr("fill", e.target.getAttribute("circle_fill"))
+      .attr("fill-opacity", 0.5)
       .selectAll("circle")
       .data(cluster)
       .join("circle")
@@ -248,17 +266,6 @@ function getCharacter(index) {
   return hexCharacters[index]
 }
 
-// https://www.freecodecamp.org/news/generate-colors-in-javascript/
-function generateNewColor() {
-  let hexColorRep = "#"
-
-  for (let index = 0; index < 6; index++){
-    const randomPosition = Math.floor ( Math.random() * hexCharacters.length ) 
-    hexColorRep += getCharacter( randomPosition )
-  }
-
-  return hexColorRep
-}
 
 function generateCircleOutlinePoints(circle, resolution) {
   let angle = 0.0
@@ -283,31 +290,6 @@ function generateCircleOutlinePoints(circle, resolution) {
   return points
 }
 
-// https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
-function invertColor(hex) {
-    if (hex.indexOf('#') === 0) {
-        hex = hex.slice(1);
-    }
-    // convert 3-digit hex to 6-digits.
-    if (hex.length === 3) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    if (hex.length !== 6) {
-        throw new Error('Invalid HEX color.');
-    }
-    // invert color components
-    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-    // pad each with zeros and return
-    return '#' + padZero(r) + padZero(g) + padZero(b);
-}
-
-function padZero(str, len) {
-    len = len || 2;
-    var zeros = new Array(len).join('0');
-    return (zeros + str).slice(-len);
-}
 
 initMap();
 
