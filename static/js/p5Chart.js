@@ -22,6 +22,7 @@ function findRatio(fps){
 }
 
 function findFPS(mass, area, swipe){
+  //mass = mass / 1000
   fps = 4* sqrt(mass/area)/(swipe*swipe)
   return fps
 }
@@ -65,7 +66,7 @@ function draw()
   rpmOut = findRatio(findFPS(160,4,1))
   let [firstRate, lastRate] = calcGearRatio(rpmIn,rpmOut);
   // dps = dpsSlider.elt.value;
-  dps = 1
+  dps = document.getElementById("rpm-input").value
   background('rgba(0,0,0,0)');  
   teethAmount = firstRate;
   radio1=teethAmount*5;
