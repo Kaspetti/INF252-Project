@@ -259,12 +259,16 @@ async function updatePoints() {
       .attr("r", d => radiusAccessor(d))
 
     tooltip.style.opacity = 1
-    tooltip.style.left = e.screenX - 25 + "px"
-    tooltip.style.top = e.screenY - 300 + "px"
+    tooltip.style.left = e.clientX - 25 + "px"
+    tooltip.style.top = e.clientY - 235 + "px"
     tooltipText.innerHTML = ""
 
     cluster.forEach(d => {
-      tooltipText.innerHTML += d.Species + "<br>"
+      if (d["Common Name"] !== null) {
+        tooltipText.innerHTML += d["Common Name"] + "<br>"
+      } else {
+        tooltipText.innerHTML += d.Species + "<br>"
+      }
     })
   }
 }

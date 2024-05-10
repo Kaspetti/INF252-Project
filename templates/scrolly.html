@@ -17,8 +17,9 @@
       article {
         position: relative;
         padding: 0;
-        max-width: 20rem;
-        transform: translateY(-25%)
+        max-width: 30rem;
+        transform: translateY(-19%);
+        text-align: center;
         /* margin: 0 auto; */
       }
 
@@ -48,7 +49,7 @@
       .step {
         margin: 0 auto 2rem auto;
         color: #fff;
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.7);
       }
 
       .step:last-child {
@@ -68,10 +69,10 @@
       }
 
       .step .info {
-        text-align: center;
+        text-align: left;
         padding: 1rem;
         font-size: 1.15rem;
-        color: black;
+        color: white;
       }
 
       #sliders {
@@ -95,8 +96,8 @@
         position: absolute;
         background-color: #e2e2e2;
         border: 1px solid black;
-        width: 200px;
-        height: 300px;
+        width: 15rem;
+        height: 20rem;
         opacity: 0;
         text-align: center;
         overflow: auto;
@@ -110,22 +111,22 @@
 
       <section id="sliders">
         <label style="min-width: 150px; display: inline-block" for="winglength-input" id="winglength-label">Wing Length: </label>
-        <input type="number" value="70" id="winglength-input" name="winglength-input">
+        <input aria-label="Change Wing Length" type="number" value="70" id="winglength-input" name="winglength-input">
         <br> 
         <label style="min-width: 150px; display: inline-block" for="kipps-input" id="kipps-label">Kipps Distance: </label>
-        <input type="number" value="10" id="kipps-input" name="kipps-input">
+        <input aria-label="Change Kipps Distance" type="number" value="10" id="kipps-input" name="kipps-input">
         <br> 
         <label style="min-width: 150px; display: inline-block" for="mass-input" id="mass-label">Mass: </label>
-        <input type="number" value="7" id="mass-input" name="mass-input">
+        <input aria-label="Change Mass" type="number" value="10" id="mass-input" name="mass-input">
         <br>
         <label style="min-width: 150px; display: inline-block" for="rpm-input" id="rpm-label">RPM: </label>
-        <input type="number" value="1" id="rpm-input" name="rpm-input">
+        <input aria-label="Change RPM" type="number" value="8000" id="rpm-input" name="rpm-input">
       </section>
 
       <section id="scrolly">
         <figure id="figure">
-          <canvas id="gears"></canvas>
-          <div id="geomap">
+          <canvas aria-label="Gear visualization" id="gears"></canvas>
+          <div aria-label="GeoMap of bird locations" id="geomap">
             <div id="tooltip">
               <h2>Birds in area:</h2>
               <p id="tooltip_text"></p>
@@ -137,25 +138,57 @@
           <div class="step" data-step="1">
             <p class="title">BIRDS</p> 
             <p class="info">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, felis at gravida gravida, sem diam convallis justo, in iaculis neque metus id ex. Praesent maximus sagittis faucibus. Sed sodales elit odio, sed finibus mi finibus non. Duis nisl leo, vulputate vitae odio vitae, pretium convallis sem. Vivamus luctus congue nibh, in sollicitudin purus pellentesque vitae. Quisque ac risus vel metus consectetur hendrerit in et mi. Integer orci erat, elementum non felis ut, faucibus placerat nibh.
+              Birds are an extraordinary species and humans have been dreaming of a day in their feathers, witnessing the sensation of flight.
+              These avians come in many different sizes, shapes, and each species have their own unique traits.
+              From the majestic hawkes and eagles, to the more common pigeons and seagulls, the characteristics of birds vary greatly.
+              Wingspan can differ as much as the Snowy Albatross with it's span of 3.7 meters, to the tiny Bee Hummingbird with it's wingspan of only 3 centimeters.
+              <br><br>
+              When taking a look at the most important traits and what they mean, <b>mass</b> is the most simple one to understand. This is the weight of the bird and in our case, represented in grams (g).
+              The wingspan, which briefly mentioned earlier, is the distance from wingtip to wingtip when the bird's wings are extended.
+              <br><br>
+              Some more complicated features to understand, but which are important for the usage of this tool is the concept of <b>Wing Length</b> and <b>Kipps Distance</b>.
+              <br><br>
+              <b>Wing Length</b> is the distance from the carpal joint (the bird's elbow) to the tip of it's longest feather in millimeters (mm).
+              <br><br>
+              A bird has two types of feathers: the primary feathers and the secondary feathers.
+              <b>Kipps Distance</b> is the distance from the longest feather to the secondary feathers in millimeters (mm), which in the illustration below is denoted as <b>k</b>.
+              <br><br>
+              As you might have seen, birds fly in noticable different manner than our traditional flying machines.
+              An airplane for example uses a motor paired with a propeller or a jet engine to generate thrust.
+              A bird however flaps their wings changing their angle of attack (the angle of the wings in comparison to flight direction).
+              This way they generate thrust efficiently making them able to maneuver in the air with extreme accuracy.
             </p>
+            <img src={{ url_for('static', filename='./img/bird.png') }} style="width: 28rem">
           </div>
           <div class="step" data-step="2">
             <p class="title">ORNITHOPTER</p> 
             <p class="info">
-              Aliquam mollis, dui vitae aliquam auctor, sapien enim ullamcorper nulla, nec tempor arcu neque in urna. Nulla non fringilla est. Maecenas vel metus euismod, facilisis lorem eu, volutpat enim. Mauris eu dapibus elit. Aliquam imperdiet venenatis risus nec vehicula. Ut efficitur massa arcu, eget tristique ligula venenatis quis. Etiam posuere, nisi ut commodo laoreet, felis ante mattis nulla, non condimentum diam orci in nunc. Etiam metus ligula, feugiat id accumsan id, consectetur in ligula. Donec gravida dictum magna vel rhoncus. Nullam eu volutpat ipsum. Nullam eleifend commodo dolor, eget tristique arcu iaculis a.
+              Ornithopters are novel flying machines which aim to mimic bird flight.
+              Seeing an ornithopter in action is amazing, but making them however is not an easy task.
+              Therefore, it may be helpful to start out by making a proven design before fully experimenting.
+              In this tool we will take a look at one of the major components of ornithopters, the gearbox, and the wanted gear ratio for it.
+              This is calculated using an approximation of the lift formula which can be found <a href="https://journals.biologists.com/jeb/article/150/1/171/5695/Predicting-Wingbeat-Frequency-and-Wavelength-of">here</a>.
+              An intro on how to build ornithopters can be found <a href="https://www.ornithopter.org/mobile/how.html">here</a>.
             </p>
           </div>
           <div class="step" data-step="3">
             <p class="title">GEARS</p> 
             <p class="info">
-              Sed cursus feugiat leo sit amet accumsan. Sed tincidunt pulvinar sem, eu eleifend quam vulputate ut. Aenean at nibh ligula.
+              This tool is taking a closer look at some aspects of building an ornithopter and tries to help the builder visualize their machine dependent on the characteristics they want it to have.
+              By changing the values in the top right of the page you can change the characteristics of the bird and see a change in the required gear ratio for an ornithopter of this configuration.
+              You can also change the max value for the input RPM to see how that may affect the gear settings.
+              This tool is not optimized or tested in real flight and is merely theoretical tool that can help builders understand and hopefully help building a functional ornithopter.
             </p>
           </div>
           <div class="step" data-step="4">
             <p class="title">MAP</p> 
             <p class="info">
-              Fusce eget commodo neque. Curabitur auctor tempus sapien nec volutpat. In hac habitasse platea dictumst. Sed vehicula feugiat lectus, eget luctus tortor tempus id. Morbi lobortis ex eu hendrerit sagittis. Nulla aliquet bibendum augue, id eleifend dui pretium non. Suspendisse potenti. Sed ultricies ligula suscipit dui imperdiet pulvinar. Vestibulum bibendum ligula vitae maximus tempor. Nunc at volutpat orci, id aliquet ex. Nunc dignissim odio leo, et consequat elit tempus at.
+              Bird characteristics like size and wing configuration has a potential to be dependent on the habitat of the birds.
+              The map on the left of the gears is used in order to aid with this. 
+              The map shows areas of the world where birds with similar characteristics as those chosen live.
+              Clicking on the areas shows the individual ranges of the different species aswell as a list of the species in that area. Some of the birds will have common names while others will have their scientific name.
+              <br><br>
+              It is, however, worth noting that the ranges in question are just approximation and all circular. The tool acurately shows the center and total area of the ranges, but the shapes will be innacurate.
             </p>
           </div>
         </article>
