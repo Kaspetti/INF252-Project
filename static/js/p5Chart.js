@@ -199,10 +199,7 @@ function makeAllGears(rpmIn, rpmOut, width, height, dps) {
     centerPositionY = height / 3;
     rotationDirection = 1;
     rotationSpeed = dps;
-    let rpm1 = round(dps * FPS * rotationSpeed * 60 / 360, 2);
-    textSize(24);
-    textAlign(LEFT);
-    text(`RPM1: ${round(rpm1, 2)}`, 0, height - 50);
+    
 
     
     if(multiplier != 1){
@@ -238,9 +235,7 @@ function makeAllGears(rpmIn, rpmOut, width, height, dps) {
 }
 
 /**
-* Converts from FPS (flaps per seconds) to RPM (rotations per minute)
-* @param {Number} fps
-* @return {Number} rpm
+* Draws each frame
 */
 function draw() {
     clear()
@@ -257,7 +252,9 @@ function draw() {
     rpmIn = rpmInput.value
 
     lastRPM = makeAllGears(rpmIn, Math.ceil(rpmOut), width, height, dps);
-    
+    textSize(24);
+    textAlign(LEFT);
+    text(`RPM in: ${round(rpmIn, 2)}`, 0, height - 50);
     theta += 0.1
     rightWing.x = origin.x + len * cos(angle)
     rightWing.y = origin.y + len * sin(angle)
@@ -278,11 +275,15 @@ function draw() {
         }
         
     } else { lastRPM = 1; } 
-    angle += lastRPM * speed
+    angle += lastRPM * speed * dps;
     
     textSize(24);
     textAlign(LEFT);
-    text(`Last RPM: ${round(lastRPM * dps * PI / 2, 2)}`, 0, height - 3);
+    currentRPM = rpmIn*output[0]
+    for(i=0;i<output[1].length;i++){
+        currentRPM /= output[1][i]
+    }
+    text(`RPM out: ${round(currentRPM, 2)}`, 0, height - 3);
     strokeWeight(2)
     line(origin.x - 300, origin.y + 100, origin.x + 300, origin.y + 100)
     line(origin.x - 300, origin.y + 110, origin.x - 300, origin.y + 90)
