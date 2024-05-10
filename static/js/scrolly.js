@@ -18,8 +18,11 @@ function handleResize() {
 
   const steps = document.querySelectorAll('.step');
   if (steps.length > 0) {
-    const lastStep = steps[steps.length - 1];
-    lastStep.style.marginBottom = window.innerHeight * 0.5 + "px";
+    steps[0].style.height = (window.innerHeight * 1.3) + "px"
+    steps[1].style.height = (window.innerHeight * 0.35) + "px"
+    steps[2].style.height = (window.innerHeight * 0.40) + "px"
+    steps[3].style.height = (window.innerHeight * 0.45) + "px"
+    steps[3].style.marginBottom = window.innerHeight * 0.6 + "px";
   }
 
   var figureHeight = window.innerHeight / 2;
@@ -35,16 +38,12 @@ function handleResize() {
 
 // scrollama event handlers
 function handleStepEnter(response) {
-  console.log(response);
   // response = { element, direction, index }
 
   // add color to current step only
   step.classed("is-active", function (d, i) {
     return i === response.index;
   });
-
-  // update graphic based on step
-  figure.select("p").text(response.index + 1);
 }
 
 

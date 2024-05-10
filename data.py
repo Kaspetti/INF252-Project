@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def get_location_data(wing_length, kipps_distance, mass):
-    df = pd.read_csv("./static/data/data.csv")
+    df = pd.read_csv("./static/data/dataCommon.csv")
     interval = 5
 
     winglength_mask = df['Wing.Length'].between(wing_length - interval, wing_length + interval)
@@ -21,7 +21,7 @@ def get_location_data(wing_length, kipps_distance, mass):
         "Kipps.Distance": "KippsDistance",
     })
 
-    return filtered[["CentroidLongitude", "CentroidLatitude", "RangeSize", "Species", "WingLength", "KippsDistance", "Mass"]]
+    return filtered[["CentroidLongitude", "CentroidLatitude", "RangeSize", "Species", "Common Name", "WingLength", "KippsDistance", "Mass"]]
 
 
 def get_wing_data():

@@ -5,6 +5,12 @@ let wingLengthInput = document.getElementById("winglength-input")
 let kippsInput = document.getElementById("kipps-input")
 let massInput = document.getElementById("mass-input")
 
+let tooltip = document.getElementById("tooltip")
+let tooltipText = document.getElementById("tooltip_text")
+let fig = document.getElementById("figure")
+
+let selectedCluster = {}
+
 const path = d3.geoPath().projection(d3.geoEqualEarth())
 
 const hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]
@@ -119,12 +125,14 @@ async function initMap() {
   function onMapClick() {
     focused = false
 
-    svg.selectAll("circle").remove();
+    svg.selectAll("g").remove();
 
     const areas = document.getElementsByClassName("area")
     for (let i = 0; i < areas.length; i++) {
       areas[i].setAttribute("fill-opacity", 0.75)
     }
+
+    tooltip.style.opacity = 0
   }
 
   updatePoints();
@@ -135,6 +143,7 @@ async function updatePoints() {
   let data = await d3.json(`/api/locations?wing-length=${parameters.wingLength}&kipps-distance=${parameters.kippsDistance}&mass=${parameters.mass}`)
 
   const svg = d3.select("#geomap svg")
+  tooltip.style.opacity = 0
 
   // Cluster all overlapping circles
   let clusters = []
@@ -236,7 +245,7 @@ async function updatePoints() {
     e.target.setAttribute("fill-opacity", 1)
 
     focused = true
-    svg.selectAll("circle").remove();
+    svg.selectAll("g").remove();
     const cluster = clusters[parseInt(e.target.getAttribute("path-id"))]
 
     svg.append("g")
@@ -248,6 +257,19 @@ async function updatePoints() {
       .attr("cx", d => xAccessor(d))
       .attr("cy", d => yAccessor(d))
       .attr("r", d => radiusAccessor(d))
+
+    tooltip.style.opacity = 1
+    tooltip.style.left = e.clientX - 25 + "px"
+    tooltip.style.top = e.clientY - 235 + "px"
+    tooltipText.innerHTML = ""
+
+    cluster.forEach(d => {
+      if (d["Common Name"] !== null) {
+        tooltipText.innerHTML += d["Common Name"] + "<br>"
+      } else {
+        tooltipText.innerHTML += d.Species + "<br>"
+      }
+    })
   }
 }
 
