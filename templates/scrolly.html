@@ -90,6 +90,17 @@
         top: 0;
         z-index: 999;
       }
+
+      #tooltip {
+        position: absolute;
+        background-color: #e2e2e2;
+        border: 1px solid black;
+        width: 200px;
+        height: 300px;
+        opacity: 0;
+        text-align: center;
+        overflow: auto;
+      }
     </style>
   </head>
 
@@ -112,9 +123,14 @@
       </section>
 
       <section id="scrolly">
-        <figure>
+        <figure id="figure">
           <canvas id="gears"></canvas>
-          <div id="geomap"></div>
+          <div id="geomap">
+            <div id="tooltip">
+              <h2>Birds in area:</h2>
+              <p id="tooltip_text"></p>
+            </div>
+          </div>
         </figure>
 
         <article>
@@ -133,7 +149,7 @@
           <div class="step" data-step="3">
             <p class="title">GEARS</p> 
             <p class="info">
-              Sed cursus feugiat leo sit amet accumsan. Sed tincidunt pulvinar sem, eu eleifend quam vulputate ut. Aenean at nibh ligula. Morbi felis risus, commodo in scelerisque id, commodo sed enim. Pellentesque nec sodales est. Integer venenatis placerat pellentesque. Vivamus quis porta arcu. Proin sollicitudin maximus metus quis consectetur. Morbi vel turpis at justo suscipit varius eget eget nisi. Integer eget varius tortor, id egestas risus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed a turpis urna.
+              Sed cursus feugiat leo sit amet accumsan. Sed tincidunt pulvinar sem, eu eleifend quam vulputate ut. Aenean at nibh ligula.
             </p>
           </div>
           <div class="step" data-step="4">

@@ -35,16 +35,12 @@ function handleResize() {
 
 // scrollama event handlers
 function handleStepEnter(response) {
-  console.log(response);
   // response = { element, direction, index }
 
   // add color to current step only
   step.classed("is-active", function (d, i) {
     return i === response.index;
   });
-
-  // update graphic based on step
-  figure.select("p").text(response.index + 1);
 }
 
 
