@@ -19,6 +19,8 @@ speed = 0.01;
 let rpmInput = document.getElementById("rpm-input");
 rpmIn = rpmInput.value;
 
+let rpmDisplay = document.getElementById("rpm-display-input")
+
 rpmInput.oninput = function () {
     const inputValue = rpmInput.value
 
@@ -251,7 +253,9 @@ function draw() {
 
     output = findCompoundGear(rpmIn, rpmOut)
     
-    dps = document.getElementById("rpm-input").value
+    dps = rpmDisplay.value
+    rpmIn = rpmInput.value
+
     lastRPM = makeAllGears(rpmIn, Math.ceil(rpmOut), width, height, dps);
     
     theta += 0.1
@@ -266,17 +270,15 @@ function draw() {
     strokeWeight(5);
     line(origin.x, origin.y, rightWing.x, rightWing.y)
     line(origin.x, origin.y, leftWing.x, leftWing.y)
-    if (lastRPM != NaN) {
-        lastRPM = 1;
-    
+   if (lastRPM != NaN) {
         if (angle > 0.3) {
             speed = -0.01;
         } else if (angle < -0.7) {
             speed = 0.01;
         }
-        angle += lastRPM * speed * PI;
-    }
-    
+        
+    } else { lastRPM = 1; } 
+    angle += lastRPM * speed
     
     textSize(24);
     textAlign(LEFT);
